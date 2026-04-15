@@ -28,6 +28,16 @@ struct Color(i32, i32, i32);
 // ---------- UNIT-LIKE STRUCT ----------
 struct AlwaysEqual;
 
+// ---------- FIELD INIT SHORTHAND ----------
+fn build_user(email: String, username: String) -> User {
+    User {
+        email,          // shorthand for email: email
+        username,
+        active: true,
+        sign_in_count: 1,
+    }
+}
+
 // ---------- METHODS via impl BLOCK ----------
 #[derive(Debug)]    // auto-implements Debug so we can {:?} print
 struct Rectangle {
@@ -98,11 +108,4 @@ fn main() {
     println!("rect holds small? {}", rect.can_hold(&small));
 }
 
-fn build_user(email: String, username: String) -> User {
-    User {
-        email,          // shorthand for email: email
-        username,
-        active: true,
-        sign_in_count: 1,
-    }
-}
+
