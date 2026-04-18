@@ -23,9 +23,10 @@ use std::fmt::Display;
 
 // ---------- DEFINING A TRAIT ----------
 trait Summary {
+    // required method - must be implemented by types that implement this trait
     fn summarize(&self) -> String;
 
-    // default method - types can override or use as-is
+    // default method - types can override or if not deuse as-is
     fn short(&self) -> String {
         format!("({}...)", self.summarize())
     }

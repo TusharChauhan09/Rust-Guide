@@ -14,12 +14,13 @@
 // THREE WAYS TO ITERATE A COLLECTION:
 //   v.iter()        -> iterator of &T   (borrow)
 //   v.iter_mut()    -> iterator of &mut T
-//   v.into_iter()   -> iterator of T    (consumes collection)
+//   v.into_iter()   -> iterator of T // take the ownership of the collection making the collection invalid    (consumes collection)
 //
 // ADAPTERS (lazy, chain-able): map, filter, take, skip, zip,
 //                              enumerate, chain, rev, ...
 // CONSUMERS (drive iteration): collect, sum, count, for_each,
 //                              fold, any, all, find, min, max
+//                              only one consumer can be used on an iterator (consumes the iterator)
 // ============================================================
 
 fn main() {
@@ -102,6 +103,22 @@ fn main() {
     let c = Counter::new();
     let data: Vec<u32> = c.take(5).collect();
     println!("counter: {:?}", data);
+
+
+    // ! itterator under the hoof
+    let nums = vec![1,2,3];
+    let mut it = nums.iter();
+    while let Some(x) = it.next() {
+        println!("{}", x);
+    };
+    // or 
+    let mut it = nums.iter();
+    loop {
+        match it.next() {
+            Some(x) => println!("{}", x),
+            None => break,
+        }
+    };
 }
 
 // ---------- IMPLEMENTING Iterator ----------

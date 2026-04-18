@@ -5,8 +5,8 @@
 //   String   - owned, heap-allocated, growable, UTF-8
 //   &str     - borrowed slice, fixed-size view into UTF-8 data
 //
-// String literals ("hi") are of type &'static str.
-//
+// String literals ("hi") are of type &'static str. it is store in the binary and points to there it is just hard coded in the binary. It is immutable and has 'static lifetime (lives for the entire duration of the program).
+// ============================================================
 // STRINGS ARE UTF-8. You CANNOT index by integer because
 // bytes != characters != grapheme clusters.
 // ============================================================

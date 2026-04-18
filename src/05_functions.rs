@@ -21,6 +21,9 @@
 //   - functions and variables: snake_case
 //   - types and traits:        CamelCase
 //   - constants and statics:   SCREAMING_SNAKE_CASE
+
+// #[...] in Rust is attribute syntax — used to add metadata or instructions to code.
+// #[attribute_name(arguments)]
 // ============================================================
 
 fn main() {
@@ -51,6 +54,21 @@ fn main() {
     // nested function (scoped to main)
     fn local_doubled(x: i32) -> i32 { x * 2 }
     println!("local: {}", local_doubled(21));
+
+    // ! anymous function (closure) that never returns
+        let add = |a: i32, b: i32| a + b;
+        let result = add(3, 4);
+
+        // or 
+
+        let added = || 3 + 2;
+
+        let x = 'f';
+        let y = |x: char| -> Result<bool, String> {
+                Ok(x == 'f')
+        };
+
+    println!("Sum = {}", result);
 }
 
 // ---------- NO RETURN VALUE ----------

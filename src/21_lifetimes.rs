@@ -22,12 +22,22 @@
 // ============================================================
 
 fn main() {
+    // ---------- WITHOUT LIFETIME ANNOTATION But Ownership taken ----------
+    let s1 = String::from("long string");
+    let result;
+    {
+        let s2 = String::from("short");
+        result = longestOWNERSHIP(s1, s2);  // ! takes the ownership 
+    }
+    println!("longest = {}", result);   // used inside outside scope
+    // this will work as we have taken the ownership and given it to the longestOWNERSHIP function and so it can return use the answer  as compiler can figure out that the ownership of s1 and s2 is now with longestOWNERSHIP function and so it can return the longest string without any issues. But this is not what we want as we want to return a reference to the longest string and not take the ownership of it. This is where lifetimes come in to tell the compiler that the reference we are returning is valid for as long as both s1 and s2 are valid.
+
     // ---------- WITHOUT LIFETIME ANNOTATION ----------
     let s1 = String::from("long string");
     let result;
     {
         let s2 = String::from("short");
-        result = longest(&s1, &s2);
+        result = longest(&s1, &s2);  // ! NOTE :  ref 
         println!("longest = {}", result);   // used inside inner scope
     }
 
@@ -38,6 +48,8 @@ fn main() {
     //     result = longest(&s1, &s2);
     // }
     // println!("{}", result);        // s2 already dropped
+
+    // here we are outside of the scope of s2 and so the reference to s2 is no longer valid and so the compiler will not allow us to use result as it may be referencing s2 which is already dropped. This is where we need lifetime annotations to tell the compiler that the reference in result is valid for as long as both s1 and s2 are valid.
 
     // ---------- STRUCT HOLDING REFERENCES ----------
     let novel = String::from("Call me Ishmael. Some years ago...");
@@ -50,6 +62,13 @@ fn main() {
     let s: &'static str = "I live for the whole program";
     println!("{}", s);
 }
+
+
+// ownership taken
+fn longestOWNERSHIP(x: String, y: String) -> String {
+    if x.len() > y.len() { x } else { y }
+}
+
 
 // ---------- EXPLICIT LIFETIME ANNOTATION ----------
 // Says: both inputs and output share the SAME lifetime 'a.

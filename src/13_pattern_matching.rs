@@ -125,3 +125,95 @@ fn value_in_cents(c: Coin) -> u8 {
 }
 
 struct Point { x: i32, y: i32 }
+
+// Option (safe null handling)
+fn safe_divide(a: i32, b: i32) -> Option<i32> {
+    if b == 0 {
+        None
+    } else {
+        Some(a / b)
+    }
+}
+fn main() {
+    let result = safe_divide(10, 2);
+
+    match result {
+        Some(value) => println!("Result: {}", value),
+        None => println!("Cannot divide by zero"),
+    }
+
+    // if let (short version)
+
+    // let result = safe_divide(10, 0);
+    // if let Some(v) = result {
+    //     println!("{}", v);
+    // } else {
+    //     println!("Error");
+    // }
+}
+
+// Result (better for errors)
+fn divide(a: i32, b: i32) -> Result<i32, String> {
+    if b == 0 {
+        Err("Division by zero".to_string())
+    } else {
+        Ok(a / b)
+    }
+}
+
+
+// ! only example to understand NULL / Option enums 
+
+// ! without null  
+fn find_a(s: &str) -> i32 {
+    for (i, ch) in s.chars().enumerate() {
+        if ch == 'a' {
+            return i as i32;
+        }
+    }
+    -1
+}
+fn main() {
+    let s = "hello";
+    let index = find_a(s);
+    if index == -1 {
+        println!("'a' not found");
+    } else {
+        println!("'a' found at index {}", index);
+    }
+}
+
+// ! with null (Option)
+fn find_a(s: &str) -> Option<usize> {
+    for (i, ch) in s.chars().enumerate() {
+        if ch == 'a' {
+            return Some(i);
+        }
+    }
+    None
+}
+fn main() {
+    let s = "apple";
+    let result = find_a(s);
+    match result {
+        Some(index) => println!("'a' found at index {}", index),
+        None => println!("'a' not found"),
+    }
+}
+
+
+// ! Result example
+fn check_char(x: char) -> Result<bool, String> {
+    Ok(x == 'f')
+}
+fn main() {
+
+    let x = 'f';
+    let y = check_char(x);
+
+    match y {
+        Ok(true) => println!("x is 'f'"),
+        Ok(false) => println!("x is not 'f'"),
+        Err(e) => println!("Error: {}", e),
+    }
+}

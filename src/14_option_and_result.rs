@@ -84,12 +84,20 @@ fn main() {
     println!("{:?}", opt2);
 }
 
-fn divide(a: f64, b: f64) -> Option<f64> {
-    if b == 0.0 { None } else { Some(a / b) }
-}
-
 // ? propagates parse error automatically
 fn parse_and_double(s: &str) -> Result<i32, ParseIntError> {
     let n: i32 = s.parse()?;    // on Err, returns early
     Ok(n * 2)
+}
+
+// these are the 2 functions we used above to demonstrate Option and Result
+
+// Option: returns Some(result) or None if division by zero
+fn divide(a: f64, b: f64) -> Option<f64> {
+    if b == 0.0 { None } else { Some(a / b) }
+}
+
+// Result: returns Ok(result) or Err(error message) if division by zero
+fn divide2(a: f64, b: f64) -> Result<f64, String> {
+    if b == 0.0 { Err("cannot divide by zero".into()) } else { Ok(a / b) }
 }
