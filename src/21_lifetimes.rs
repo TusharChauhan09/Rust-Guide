@@ -6,6 +6,17 @@
 // You only write lifetimes when the compiler cannot figure
 // them out on its own.
 //
+// Lifetimes are used to:
+// Describe how the lifetime of the output reference is related to the lifetimes of the input references
+//
+// IMPORTANT:
+// Lifetimes do NOT:
+//   ❌ extend how long data lives
+//   ❌ control memory allocation
+//   ❌ change runtime behavior
+//   ✔ they are compile-time checks only
+//
+//
 // SYNTAX:
 //   &'a T           reference with lifetime 'a
 //   &'a mut T       mutable ref with lifetime 'a
@@ -102,3 +113,47 @@ where
     println!("Announcement: {}", ann);
     if x.len() > y.len() { x } else { y }
 }
+
+
+// Note : 
+
+// ! Case 1: Struct (User)
+
+// struct User<'a, 'b> {
+//     first_name: &'a str,
+//     last_name: &'b str,
+// }
+
+// let first_name = String::from("Harkirat");
+// {
+//     let last_name = String::from("Singh");
+//     let user = User {
+//         first_name: &first_name, // lives long
+//         last_name: &last_name,   // lives short
+//     };
+// }
+
+// 👉 You STORE both values
+// User has:
+// - first_name
+// - last_name
+// ✔ They are independent
+// ✔ So lifetimes can be different
+// ➡️ 'a, 'b
+
+// ! 2: Function (longest)
+
+// fn longest<'a>(x: &'a str, y: &'a str) -> &'a str
+
+// let s1 = String::from("long string"); let result; { let s2 = String::from("short"); result = longest(&s1, &s2);
+
+
+// 👉 You RETURN one value
+// return either x OR y
+// ❗ Rust doesn’t know which one
+// ➡️ So both must be equally safe
+// ➡️ same lifetime 'a
+
+// ! So
+// Use 'a, 'b → when references are independent
+// Use 'a → when return depends on inputs

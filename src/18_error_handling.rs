@@ -13,6 +13,13 @@
 //   Works on Result and Option in matching function signatures.
 // ============================================================
 
+// how can we handle errors in Rust
+// 1. panic!() - unrecoverable error, aborts the thread
+// 2. Result<T, E> - recoverable error, caller decides what to do 
+// 3. ? operator - propagates errors up the call stack, converting types as needed
+// 4. .unwrap() / .expect("message") - panic on Err, with optional message
+
+
 use std::fs::File;
 use std::io::{self, Read};
 use std::num::ParseIntError;

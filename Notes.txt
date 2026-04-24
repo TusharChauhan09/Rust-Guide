@@ -1,0 +1,15 @@
+Harkirat 
+slides:https://projects.100xdevs.com/tracks/rust-bootcamp/Rust-Bootcamp-1
+
+Zubiarfan 
+github: https://github.com/3rfaan/courses/tree/main/Rust/rust-by-practice/src
+
+rust-official:
+https://doc.rust-lang.org/book/
+
+
+rust bootcamp:
+https://www.notion.so/Rust-for-Solana-contracts-1937dfd1073580c8a8fbc7e135e6d22a
+
+Rust part-3 async and mutithreading  (super-30)
+https://petal-estimate-4e9.notion.site/Rust-Bootcamp-Part-3-2a27dfd1073580f5b3fde086c58c7058

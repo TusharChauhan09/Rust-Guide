@@ -83,3 +83,90 @@ fn main() {
 // - Holding a MutexGuard across an .await can deadlock.
 // - Use tokio::sync::Mutex, not std::sync::Mutex, across .awaits.
 // - !Send futures cannot be spawned across threads.
+
+
+// ! without async runtime 
+use rouille::{Response, router};
+
+fn calculate_sum(n: i64) -> i64 {
+    let mut sum = 0;
+    for i in 1..=n {
+        sum += i;
+    }
+    sum
+}
+fn main() {
+    println!("Server on http://127.0.0.1:8080");
+    rouille::start_server("127.0.0.1:8080", move |request| {
+        router!(request,
+            (GET) (/) => {
+                let sum = calculate_sum(1000_000_000);  
+                Response::json(&serde_json::json!({
+                    "sum": sum,
+                }))
+            },
+            _ => Response::empty_404()
+        )
+    });
+}
+
+
+// ! with async runtime (tokio)  // wrong way to use async runtime, just for demonstration of async/await syntax. In real code, you would want to use a proper async server framework that manages the runtime for you (e.g. warp, axum, etc.) and not block the main thread with a long-running synchronous operation like calculate_sum.
+use tokio::runtime::Runtime;
+use rouille::{Response, router};
+fn main() {
+    println!("Server on http://127.0.0.1:8080");
+
+    // Create a single runtime to use for all requests. In real code, you might want to use a more robust server framework that manages the runtime for you (e.g. warp, axum, etc.).
+    let rt = Runtime::new().unwrap();
+
+    rouille::start_server("127.0.0.1:8080", move |request| {
+        router!(request,
+            (GET) (/) => {
+                let file_contents = rt.block_on(async {
+                    tokio::fs::read_to_string("a.txt").await.unwrap()
+                });
+                Response::json(&serde_json::json!({
+                    "file_contents": file_contents
+                }))
+            },
+            _ => Response::empty_404()
+        )   
+    });
+}
+
+
+// ! right way
+
+// There are 3 famous HTTP frameworks you can use that support async rust
+// 1. Axum
+// 2. Actix web
+// 3. Poem
+
+// ! with async runtime (actix-web)
+use actix_web::{get, App, HttpServer, HttpResponse, Result};
+use serde_json::json;
+
+#[get("/")]
+async fn read_file() -> Result<HttpResponse> {
+    let file_contents = tokio::fs::read_to_string("a.txt")
+        .await
+        .map_err(|e| actix_web::error::ErrorInternalServerError(e))?;
+    
+    Ok(HttpResponse::Ok().json(json!({
+        "file_contents": file_contents
+    })))
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    println!("Server on http://127.0.0.1:8080");
+    
+    HttpServer::new(|| {
+        App::new()
+            .service(read_file)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
