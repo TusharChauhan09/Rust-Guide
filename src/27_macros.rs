@@ -2,13 +2,17 @@
 // 27 - MACROS
 // ============================================================
 // Macros are code that writes code (metaprogramming). Rust has:
+// macros are a powerful feature that allows for metaprogramming by enabling 
+// the generation of code at compile-time. Macros in Rust are similar to functions 
+// but differ in that they operate at the syntactic level—they generate or transform
+// Rust code before the program is actually compiled.
 //
 //   1. DECLARATIVE MACROS   (macro_rules!)       <- most common
 //   2. PROCEDURAL MACROS    (compile-time funcs that transform
 //                            TokenStreams — need a separate crate)
-//        - custom derive:  #[derive(MyTrait)]
-//        - attribute-like: #[my_attr]
-//        - function-like:  my_macro!(...)
+//        - custom derive:  #[derive(MyTrait)] :  generates trait impls
+//        - attribute-like: #[my_attr] :  modifies items (functions, structs, etc.)
+//        - function-like:  my_macro!(...) :  looks like a function call but is a macro
 //
 // MACROS vs FUNCTIONS:
 //   - Macros expand at compile time; functions run at runtime.
@@ -86,6 +90,46 @@ macro_rules! create_getters {
 }
 create_getters!(Person, name: String, age: u32);
 
+
+// ? Procedual macro
+// ! 1. custom derive: :  #[derive(MyTrait)] :  generates trait impls
+#[derive(Debug , PartialEq)]  // for printing the using debug {:?}
+struct Rectangle {
+    width: u32,
+    height: u32,
+}
+
+// display trait for custom formatting with {} to print the rectangle
+// println!("r = {}", r);  // uses Display trait
+use std::fmt::{self, Display, Formatter};
+impl Display for Rectangle {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "Rectangle {{ width: {}, height: {} }}", self.width, self.height)
+    }
+}
+
+// we we dont use allready derive PartialEq, we can implement it ourselves like this
+// impl PartialEq for Rectangle {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.width == other.width && self.height == other.height
+//     }
+// }
+
+// ! 2. attribute-like: #[my_attr] :  modifies items (functions, structs, etc.)
+#[route("GET")]
+fn home() {
+    println!("Welcome to the home page!");
+}
+
+#[route("POST")]
+fn create_post() {
+    println!("Creating a new post!");
+}
+
+// ! 3. function-like:  my_macro!(...) :  looks like a function call but is a macro
+
+
+
 // ---------- dbg! AS DEBUGGING HELPER ----------
 // dbg!(expr) prints file, line, expr, and its value, and returns it.
 
@@ -93,6 +137,7 @@ fn main() {
     say_hello!();
 
     let s = square!(5);
+    // ? 1. Declarative
     println!("square(5) = {}", s);
 
     println!("max = {}", max!(3, 1, 4, 1, 5, 9, 2, 6));
@@ -116,7 +161,19 @@ fn main() {
     let opt = Some(5);
     let is_some_big = matches!(opt, Some(n) if n > 3);
     println!("is big: {}", is_some_big);
+
+
+    // ! 1. custom derive
+    let r = Rectangle { width: 30, height: 50 };
+    println!("{:?}",r); // uses Debug trait
+    println!("r = {}", r);  // uses Display trait
+
+    let r2 = Rectangle { width: 30, height: 50 };
+    println!("r == r2: {}", r == r2);  // uses PartialEq
 }
+
+
+
 
 // ---------- PROCEDURAL MACROS (sketch) ----------
 // Proc macros must live in a crate with `proc-macro = true`:

@@ -59,23 +59,23 @@ impl Summary for Tweet {
     }
 }
 
-// ---------- TRAITS AS FUNCTION PARAMS ----------
-// impl Trait syntax (sugar)
+// ? ---------- TRAITS AS FUNCTION PARAMS ----------
+// !  impl Trait syntax (sugar)
 fn notify(item: &impl Summary) {
     println!("Breaking: {}", item.summarize());
 }
 
-// trait bound syntax (equivalent)
+// ! trait bound syntax (equivalent)
 fn notify2<T: Summary>(item: &T) {
     println!("Breaking: {}", item.summarize());
 }
 
-// Multiple bounds
+// !  Multiple bounds
 fn notify3<T: Summary + Display>(item: &T) {
     println!("{} -> {}", item, item.summarize());
 }
 
-// where clause for clarity
+// !  where clause for clarity
 fn compare<T, U>(a: &T, b: &U) -> bool
 where
     T: Summary,
